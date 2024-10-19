@@ -1,28 +1,38 @@
 package bunchbysoh;
 
 public class Main {
-  static class CountsBySoH {
-    public int healthy = 0;
-    public int exchange = 0;
-    public int failed = 0;
-  };
+    private static final int RATED_CAPACITY = 120; // Rated capacity in Ah
 
-  static CountsBySoH countBatteriesByHealth(int[] presentCapacities) {
-    CountsBySoH counts = new CountsBySoH();
-    return counts;
-  }
+    public static void main(String[] args) {
+        // Test data
+        int[] presentCapacities = {105, 80, 70, 50, 90, 110, 60, 120};
 
-  static void testBucketingByHealth() {
-    System.out.println("Counting batteries by SoH...\n");
-    int[] presentCapacities = {113, 116, 80, 95, 92, 70};
-    CountsBySoH counts = countBatteriesByHealth(presentCapacities);
-    assert(counts.healthy == 2);
-    assert(counts.exchange == 3);
-    assert(counts.failed == 1);
-    System.out.println("Done counting :)\n");
-  }
+        // function call to classify batteries
+        classifyBatteries(presentCapacities);
+    }
 
-  public static void main(String[] args) {
-    testBucketingByHealth();
-  }
+    public static void classifyBatteries(int[] presentCapacities) {
+        int healthyCount = 0;
+        int exchangeCount = 0;
+        int failedCount = 0;
+
+        for (int presentCapacity : presentCapacities) {
+            double soh = computeSoH(presentCapacity);
+            if (soh > 80) {
+                healthyCount++;
+            } else if (soh >= 62) {
+                exchangeCount++;
+            } else {
+                failedCount++;
+            }
+        }
+
+        System.out.println("Healthy: " + healthyCount);
+        System.out.println("Exchange: " + exchangeCount);
+        System.out.println("Failed: " + failedCount);
+    }
+
+    public static double computeSoH(int presentCapacity) {
+        return 100.0 * presentCapacity / RATED_CAPACITY; // Calculate SoH percentage
+    }
 }
